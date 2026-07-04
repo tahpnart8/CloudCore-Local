@@ -1,0 +1,103 @@
+# ============================================================
+# CloudCore Local — OS Hardening Playbook
+# Mục đích: Bảo mật WSL2 Ubuntu theo best practices
+# ============================================================
+- name: OS hardening & system config
+  hosts: local
+  become: yes                    # Chạy với quyền sudo
+
+  tasks:
+    # ── TASK 1: Cập nhật tất cả packages ──
+    # Giống "Windows Update" nhưng cho Linux.
+    # upgrade=dist = nâng cấp toàn bộ hệ thống lên bản mới nhất.
+    # update_cache=yes = refresh danh sách package trước khi upgrade.
+    - name: Update all packages
+      apt:
+        upgrade: dist
+        update_cache: yes
+        cache_valid_time: 3600   # Cache 1 giờ, tránh update liên tục
+
+    # ── TASK 2: Cài công cụ bảo mật ──
+    # - ufw: Uncomplicated Firewall — tường lửa đơn giản
+    # - fail2ban: Tự động ban IP đăng nhập sai nhiều lần
+    # - chrony: Đồng bộ thời gian qua NTP (thay ntpd, nhẹ hơn)
+    # - htop: Monitor tài nguyên (CPU/RAM) trực quan
+    # - net-tools: Công cụ mạng cơ bản (ifconfig, netstat)
+    # - dnsutils: Công cụ DNS (dig, nslookup)
+    - name: Install essential security tools
+      apt:
+        name:
+          - ufw
+          - fail2ban
+          - chrony
+          - htop
+          - net-tools
+          - dnsutils
+        state: present           # present = cài nếu chưa có
+
+    # ── TASK 3: Cấu hình UFW — cho phép SSH ──
+    # UFW mặc định sẽ CHẶN mọi kết nối đến.
+    # Ta cần MỞ port 22 (SSH) trước khi bật UFW,
+    # nếu không sẽ tự khóa mình ra ngoài!
+    - name: Configure UFW - allow SSH
+      community.general.ufw:
+        rule: allow
+        port: '22'
+        proto: tcp
+
+    # ── TASK 4: Bật UFW với chính sách deny-incoming ──
+    # deny incoming = mặc định chặn mọi kết nối đến
+    # → Chỉ port 22 (đã allow ở trên) là mở
+    # → Đây là nguyên tắc "least privilege" trong bảo mật
+    - name: Enable UFW with deny-incoming default
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    # ── TASK 5: Tắt root login qua SSH ──
+    # Root là user quyền cao nhất — hacker luôn thử login root.
+    # Tắt root login buộc phải dùng user thường rồi sudo.
+    # lineinfile = tìm dòng khớp regexp, thay bằng line mới.
+    - name: Harden SSH - disable root login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'    # Tìm dòng bắt đầu bằng PermitRootLogin
+        line: 'PermitRootLogin no'      # Thay bằng "no"
+        backup: yes                     # Tạo backup file gốc trước khi sửa
+
+    # ── TASK 6: Cấu hình Fail2ban ──
+    # Fail2ban giám sát log đăng nhập.
+    # Nếu 1 IP đăng nhập sai 5 lần → tự động ban 1 giờ.
+    # Chống brute-force attack hiệu quả.
+    - name: Configure fail2ban jail
+      copy:
+        dest: /etc/fail2ban/jail.local
+        content: |
+          [DEFAULT]
+          bantime = 3600         # Ban 3600 giây = 1 giờ
+          maxretry = 5           # Cho phép sai tối đa 5 lần
+
+          [sshd]
+          enabled = true         # Bật giám sát cho SSH
+        mode: '0644'
+      notify: restart fail2ban   # Khi file thay đổi → restart service
+
+    # ── TASK 7: Bật Chrony NTP ──
+    # NTP (Network Time Protocol) đồng bộ đồng hồ hệ thống.
+    # Quan trọng vì: log timestamp sai → debug sự cố rất khó.
+    # Chrony nhẹ hơn ntpd, phù hợp VM/container.
+    - name: Ensure chrony is running
+      service:
+        name: chronyd
+        state: started
+        enabled: yes             # Tự bật khi khởi động
+
+  # ── HANDLERS ──
+  # Handler chỉ chạy khi task "notify" nó.
+  # Tránh restart service không cần thiết.
+  handlers:
+    - name: restart fail2ban
+      service:
+        name: fail2ban
+        state: restarted
