@@ -13,8 +13,7 @@
 
 **CloudCore Local** là một dự án thí nghiệm hạ tầng Cloud-Native thiên hướng Enterprise được xây dựng và triển khai hoàn toàn trên môi trường local (Docker Desktop + WSL2 Ubuntu). 
 
-Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết hợp AI Recommendation**, tự động xử lý hàng<img width="782" height="392" alt="CloudCore Local drawio" src="https://github.com/user-attachments/assets/8de69736-2c56-4824-9698-2c1ffc35b0fe" />
- triệu sự kiện mua sắm, tính toán doanh thu theo cửa sổ thời gian (Tumbling Window), lọc dữ liệu rác (Data Cleansing) và đưa ra gợi ý sản phẩm cá nhân hóa bằng mô hình học máy (Vector Search) trong thời gian thực.
+Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết hợp AI Recommendation**, tự động xử lý hàng triệu sự kiện mua sắm, tính toán doanh thu theo cửa sổ thời gian (Tumbling Window), lọc dữ liệu rác (Data Cleansing) và đưa ra gợi ý sản phẩm cá nhân hóa bằng mô hình học máy (Vector Search) trong thời gian thực.
 
 ---
 
@@ -23,6 +22,9 @@ Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết h
 
 <img width="782" height="392" alt="CloudCore Local drawio" src="https://github.com/user-attachments/assets/16c07bcb-b362-46ca-a1da-1cde906aa265" />
 
+---
+## Dashboard Demo
+![1783284621464](image/06-phase5-observability/1783284621464.png)
 ---
 
 ## 🚀 Các Bước Triển Khai Chi Tiết (Implementation Roadmap)
@@ -76,7 +78,7 @@ Mô phỏng 3 kịch bản sự cố Production thực tế để kiểm tra tí
 
 ---
 
-## 📊 Thông Số Kỹ Thuật Đạt Được (Key Metrics & Benchmarks)
+## Thông Số Kỹ Thuật Đạt Được (Key Metrics & Benchmarks)
 
 | Chỉ số (Metric) | Giá trị thực tế (Measured Value) |
 |---|---|
@@ -109,16 +111,3 @@ CloudCore-Local/
 └── guides/             # Bộ tài liệu hướng dẫn từng bước 6 Phases (Step-by-step)
 ```
 
----
-
-## 💼 Dòng Điểm Nhấn Ấn Tượng Cho CV (CV Bullets)
-
-```markdown
-• Deployed multi-node Kubernetes cluster (k3d/k3s) via Terraform IaC, automated OS hardening with Ansible — infrastructure recreation: 3 minutes.
-• Built streaming pipeline (Redpanda) replaying 42M e-commerce events with 120x-600x speed, real-time funnel conversion and revenue metrics via 30-second tumbling windows.
-• Integrated Real-time Vector AI Recommendation (FastAPI + Milvus + SentenceTransformers) with stream data cleansing layer.
-• Deployed Prometheus + Grafana + Alertmanager observability stack, conducted 3 on-call incident simulations (Pod Crash MTTR: 8s, 5x Traffic Surge, Node Drain) with comprehensive postmortem documentation.
-```
-
----
-*Dự án được xây dựng và hoàn thành xuất sắc bởi **tahpnart8**.*
