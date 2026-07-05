@@ -24,7 +24,7 @@ Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết h
 
 ---
 ## Dashboard Demo
-![1783284621464](image/06-phase5-observability/1783284621464.png)
+<img width="1899" height="940" alt="Screenshot 2026-07-06 035013" src="https://github.com/user-attachments/assets/4c5ae662-ffbf-4449-8b99-905154c0053e" />
 ---
 
 ## 🚀 Các Bước Triển Khai Chi Tiết (Implementation Roadmap)
