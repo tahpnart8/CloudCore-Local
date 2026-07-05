@@ -50,7 +50,7 @@ Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết h
 
 ### 🔹 Phase 4: Real-Time Streaming Pipeline & Stream Data Cleansing
 - Triển khai **Redpanda Broker** (môi trường Kafka siêu tốc độ, hiệu năng cao).
-- **Producer Pod:** Đọc bộ dữ liệu 42 triệu dòng từ Kaggle và phát lại vào Redpanda với tốc độ nén thời gian **120x - 600x**.
+- **Producer Pod:** Đọc bộ dữ liệu 4,1 triệu dòng từ Kaggle và phát lại vào Redpanda với tốc độ nén thời gian **120x - 600x**.
 - **Consumer Pod & Tumbling Window:**
   - Thu thập event stream và tính toán chỉ số kinh doanh theo cửa sổ 30 giây (`Tumbling Window 30s`): Tổng số views, carts, purchases, tổng doanh thu ($) và tỷ lệ chuyển đổi (Conversion Rate).
   - Expose toàn bộ metrics theo chuẩn Prometheus ở cổng `:8001`.
