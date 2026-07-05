@@ -1,0 +1,64 @@
+# ── Namespace streaming ──
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: streaming
+---
+# ── Redpanda Deployment ──
+# Redpanda = message broker tương thích Kafka
+# Mode dev-container: tối ưu cho môi trường phát triển
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redpanda
+  namespace: streaming
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redpanda
+  template:
+    metadata:
+      labels:
+        app: redpanda
+    spec:
+      containers:
+      - name: redpanda
+        image: docker.redpanda.com/redpandadata/redpanda:latest
+        args:
+          - redpanda
+          - start
+          - --mode dev-container       # Mode nhẹ cho dev
+          - --smp 1                    # 1 CPU core
+          - --memory 1G               # Giới hạn RAM = 1GB
+          - --reserve-memory 0        # Không reserve thêm
+          - --overprovisioned          # Cho phép chạy trên shared CPU
+          - --kafka-addr PLAINTEXT://0.0.0.0:19092
+          - --advertise-kafka-addr PLAINTEXT://redpanda.streaming:19092
+        ports:
+        - containerPort: 19092        # Kafka-compatible port
+          name: kafka
+        - containerPort: 9644         # Admin API port
+          name: admin
+        resources:
+          limits:
+            memory: "1200Mi"          # Giới hạn cứng K8s
+---
+# ── Redpanda Service ──
+# Service cho phép producer/consumer kết nối bằng tên:
+# "redpanda.streaming:19092" thay vì IP (có thể thay đổi)
+apiVersion: v1
+kind: Service
+metadata:
+  name: redpanda
+  namespace: streaming
+spec:
+  selector:
+    app: redpanda
+  ports:
+  - name: kafka
+    port: 19092
+    targetPort: 19092
+  - name: admin
+    port: 9644
+    targetPort: 9644

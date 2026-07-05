@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecom-producer
+  namespace: streaming
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecom-producer
+  template:
+    metadata:
+      labels:
+        app: ecom-producer
+    spec:
+      containers:
+      - name: producer
+        image: ecom-producer:latest
+        imagePullPolicy: Never
+        env:
+        - name: SPEED_FACTOR
+          value: "120"
+        - name: KAFKA_BROKERS
+          value: "redpanda.streaming:19092"
+        - name: CSV_PATH
+          value: "/data/2019-Oct.csv"
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        emptyDir: {}

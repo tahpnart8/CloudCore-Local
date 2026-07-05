@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecom-consumer
+  namespace: streaming
+  labels:
+    app: ecom-consumer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecom-consumer
+  template:
+    metadata:
+      labels:
+        app: ecom-consumer
+    spec:
+      containers:
+      - name: consumer
+        image: ecom-consumer:latest
+        imagePullPolicy: Never
+        env:
+        - name: KAFKA_BROKERS
+          value: "redpanda.streaming:19092"
+        - name: AI_SERVICE_URL
+          value: "http://ai-inference.ai:8000"
+        resources:
+          limits:
+            memory: "256Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 8001
+          name: metrics
+---
+# Service cho consumer (để Prometheus scrape metrics)
+apiVersion: v1
+kind: Service
+metadata:
+  name: ecom-consumer
+  namespace: streaming
+  labels:
+    app: ecom-consumer
+spec:
+  selector:
+    app: ecom-consumer
+  ports:
+  - name: metrics
+    port: 8001
+    targetPort: 8001

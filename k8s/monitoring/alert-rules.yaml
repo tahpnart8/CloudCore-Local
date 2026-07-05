@@ -1,0 +1,33 @@
+# PrometheusRule: Định nghĩa điều kiện trigger alert
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: pipeline-alerts
+  namespace: monitoring
+  labels:
+    release: kube-prom
+spec:
+  groups:
+  - name: pipeline-alerts
+    rules:
+    # Alert 1: Pipeline ngừng hoạt động
+    # Nếu không có event nào trong 3 phút → có vấn đề
+    - alert: PipelineStopped
+      expr: rate(ecom_events_total[3m]) == 0
+      for: 3m
+      labels:
+        severity: critical
+      annotations:
+        summary: "E-commerce pipeline has stopped!"
+        description: "No events processed in the last 3 minutes"
+
+    # Alert 2: Tỷ lệ chuyển đổi giảm bất thường
+    # Nếu purchase/cart < 1% trong 5 phút → cần kiểm tra
+    - alert: ConversionDropped
+      expr: ecom_conversion_purchase_to_cart < 0.01
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "Conversion rate critically low"
+        description: "Purchase-to-cart ratio below 1% for 5 minutes"

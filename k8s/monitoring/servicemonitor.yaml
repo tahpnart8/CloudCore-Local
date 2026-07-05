@@ -1,0 +1,19 @@
+# ServiceMonitor nói với Prometheus:
+# "Hãy scrape metrics từ service ecom-consumer"
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: ecom-consumer
+  namespace: monitoring
+  labels:
+    release: kube-prom          # Phải khớp với Helm release name
+spec:
+  selector:
+    matchLabels:
+      app: ecom-consumer        # Tìm Service có label này
+  namespaceSelector:
+    matchNames:
+      - streaming               # Trong namespace streaming
+  endpoints:
+  - port: metrics               # Scrape port "metrics" (8001)
+    interval: 15s               # Mỗi 15 giây 1 lần
