@@ -1,4 +1,4 @@
-# ☁️ CloudCore Local — Cloud-Native Infrastructure & Real-Time AI Streaming Lab
+# ☁️ CloudCore Local — Cloud-Native E-Commerce & AI Streaming Engine
 
 [![Kubernetes](https://img.shields.io/badge/Kubernetes-k3d%2Fk3s-blue.svg)](https://k3s.io/)
 [![Terraform](https://img.shields.io/badge/IaC-Terraform-purple.svg)](https://www.terraform.io/)
@@ -11,39 +11,17 @@
 
 ## 📌 Tổng Quan Dự Án (Project Overview)
 
-**CloudCore Local** là một phòng thí nghiệm hạ tầng Cloud-Native chuẩn Enterprise được xây dựng và triển khai hoàn toàn trên môi trường local (Docker Desktop + WSL2 Ubuntu). 
+**CloudCore Local** là một dự án thí nghiệm hạ tầng Cloud-Native thiên hướng Enterprise được xây dựng và triển khai hoàn toàn trên môi trường local (Docker Desktop + WSL2 Ubuntu). 
 
-Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết hợp AI Recommendation**, tự động xử lý hàng chục triệu sự kiện mua sắm, tính toán doanh thu theo cửa sổ thời gian (Tumbling Window), lọc dữ liệu rác (Data Cleansing) và đưa ra gợi ý sản phẩm cá nhân hóa bằng mô hình học máy (Vector Search) trong thời gian thực.
+Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết hợp AI Recommendation**, tự động xử lý hàng<img width="782" height="392" alt="CloudCore Local drawio" src="https://github.com/user-attachments/assets/8de69736-2c56-4824-9698-2c1ffc35b0fe" />
+ triệu sự kiện mua sắm, tính toán doanh thu theo cửa sổ thời gian (Tumbling Window), lọc dữ liệu rác (Data Cleansing) và đưa ra gợi ý sản phẩm cá nhân hóa bằng mô hình học máy (Vector Search) trong thời gian thực.
 
 ---
 
 ## 🏗️ Kiến Trúc Hệ Thống (System Architecture)
 
-```
-                                ┌───────────────────────────────────────────────────────────┐
-                                │                    KUBERNETES CLUSTER                     │
-                                │                      (k3d / k3s)                          │
-                                │                                                           │
-┌──────────────────────┐        │   ┌────────────────┐      ┌───────────────────────────┐   │
-│  Dataset E-Commerce  │        │   │    Redpanda    │ ────►│    Consumer (Python)      │   │
-│ (42M Events Kaggle)  │        │   │ (Kafka Stream) │      │  30s Tumbling Window      │   │
-└──────────┬───────────┘        │   └───────▲────────┘      │  + Stream Data Cleansing  │   │
-           │                    │           │               └─────────────┬─────────────┘   │
-           ▼                    │           │                             │                 │
-┌──────────────────────┐        │   ┌───────┴────────┐                    ▼                 │
-│   Producer (Python)  │ ───────┼──►│  Redpanda Svc  │      ┌───────────────────────────┐   │
-│  (Replay 120x-600x)  │        │   │ (Port 19092)   │      │   AI Recommendation Svc   │   │
-└──────────────────────┘        │   └────────────────┘      │  FastAPI + SentenceTransformers│
-                                │                           │    + Milvus Vector DB     │   │
-                                │                           └───────────────────────────┘   │
-                                │                                                           │
-                                │   ┌───────────────────────────────────────────────────┐   │
-                                │   │             OBSERVABILITY STACK                   │   │
-                                │   │  Prometheus  ──►  Grafana Dashboards (Port 3000)  │   │
-                                │   │                 └─► Alertmanager (Alert Rules)    │   │
-                                │   └───────────────────────────────────────────────────┘   │
-                                └───────────────────────────────────────────────────────────┘
-```
+
+<img width="782" height="392" alt="CloudCore Local drawio" src="https://github.com/user-attachments/assets/16c07bcb-b362-46ca-a1da-1cde906aa265" />
 
 ---
 
