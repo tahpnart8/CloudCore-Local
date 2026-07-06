@@ -20,7 +20,7 @@ Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết h
 ## 🏗️ Kiến Trúc Hệ Thống (System Architecture)
 
 
-<img width="782" height="392" alt="CloudCore Local drawio" src="https://github.com/user-attachments/assets/16c07bcb-b362-46ca-a1da-1cde906aa265" />
+<img width="1899" height="940" alt="CloudCore Local drawio" src="https://github.com/user-attachments/assets/16c07bcb-b362-46ca-a1da-1cde906aa265" />
 
 ---
 ## Dashboard Demo
