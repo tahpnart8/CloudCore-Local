@@ -4,7 +4,7 @@
 [![Terraform](https://img.shields.io/badge/IaC-Terraform-purple.svg)](https://www.terraform.io/)
 [![Ansible](https://img.shields.io/badge/Config-Ansible-red.svg)](https://www.ansible.com/)
 [![Redpanda](https://img.shields.io/badge/Streaming-Redpanda-ff69b4.svg)](https://redpanda.com/)
-[![AI Inference](https://img.shields.io/badge/AI-FastAPI%20%2B%20Milvus-green.svg)](https://fastapi.tiangolo.com/)
+[![AI Inference](https://img.shields.io/badge/AI-FastAPI%20%2B%20SentenceTransformers-green.svg)](https://fastapi.tiangolo.com/)
 [![Observability](https://img.shields.io/badge/Monitoring-Prometheus%20%2B%20Grafana-orange.svg)](https://prometheus.io/)
 
 ---
@@ -42,7 +42,7 @@ Dự án mô phỏng một **Hệ thống E-commerce Real-Time Streaming kết h
 
 ### 🔹 Phase 3: Real-Time Vector AI Recommendation Service
 - Triển khai dịch vụ AI bằng **FastAPI** và mô hình nhúng ngôn ngữ `SentenceTransformers (all-MiniLM-L6-v2)`.
-- Kết nối Cơ sở dữ liệu Vector **Milvus DB** lưu trữ chỉ mục ngữ nghĩa của các sản phẩm.
+- Lưu trữ chỉ mục ngữ nghĩa (embedding vector) của sản phẩm trong in-memory store, tìm kiếm bằng Cosine Similarity thủ công qua NumPy. (Ghi chú: phiên bản hiện tại chưa tích hợp vector database chuyên dụng như Milvus/Pinecone — đây là hướng nâng cấp tiếp theo khi cần scale catalog lớn hơn.)
 - **Feature Engineering:** Tự động hợp nhất các thông tin rời rạc (`brand` + `category_code`) thành chuỗi văn bản nhận diện tính chất sản phẩm.
 - Cung cấp 2 API chính:
   - `/catalog`: Nạp thông tin vector sản phẩm vào cơ sở dữ liệu.
@@ -100,7 +100,7 @@ CloudCore-Local/
 ├── streaming/          # Mã nguồn Python Producer & Consumer
 │   ├── producer/       # Script replay dữ liệu 42M dòng
 │   └── consumer/       # Script tính Tumbling Window & Data Cleansing
-├── ai/                 # Dịch vụ AI Recommendation (FastAPI + Milvus)
+├── ai/                 # Dịch vụ AI Recommendation (FastAPI + SentenceTransformers, in-memory vector store)
 ├── k8s/                # Kubernetes Manifests (Deployments, Services, ServiceMonitors)
 │   ├── streaming/      # Redpanda, Producer, Consumer YAMLs
 │   └── monitoring/     # PrometheusRules, ServiceMonitors YAMLs
