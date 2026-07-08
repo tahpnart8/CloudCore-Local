@@ -108,6 +108,6 @@ CloudCore-Local/
 │   ├── incident-01-consumer-crash.md
 │   ├── incident-02-traffic-surge.md
 │   └── incident-03-node-drain.md
-└── guides/             # Bộ tài liệu hướng dẫn từng bước 6 Phases (Step-by-step)
+└── engineering_logs/   # Bộ tài liệu nhật ký kỹ thuật từng bước 6 Phases 
 ```
 
